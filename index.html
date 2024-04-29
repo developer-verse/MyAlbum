@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -107,6 +107,44 @@
       background-color: gray;
       color: #fff;
     }
+    /* Dialogue styles */
+    .dialogue {
+      display: none; /* Initially hidden */
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      z-index: 9999;
+    }
+
+    .dialogue-content {
+      text-align: center;
+    }
+
+    .dialogue-title {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .dialogue-text {
+      margin-bottom: 20px;
+    }
+
+    .sign {
+      font-family: 'Minecraft', sans-serif; /* Apply Minecraft font */
+      font-size: 20px;
+      color: #0099ff; /* Minecraft blue color */
+    }
+    
+    @font-face {
+      font-family: 'Minecraft';
+      src: url('minecraft.otf') format('opentype'); /* URL of the .otf font file */
+}
+
 
     /* Time input */
     #timeInput, #volumeInput {
@@ -263,6 +301,13 @@
     const closeBtn = document.querySelector('.close');
     closeBtn.addEventListener('click', () => {
       modal.style.display = 'none';
+    });
+    // Close dialogue when user clicks outside of it
+    window.addEventListener('click', function(event) {
+      const dialogue = document.querySelector('.dialogue');
+      if (event.target === dialogue) {
+        dialogue.style.display = 'none';
+      }
     });
 
     // Update audio stats
