@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GIF Player</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .gif-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    #gif {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .fade-out {
+      animation: fadeOut 1s forwards;
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <audio id="audio" controls autoplay>
+      <source src="initial-song.mp3" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+  
+  <div class="gif-container">
+    <img id="gif" src="initial.gif" alt="GIF">
+  </div>
+  
+  <script>
+    const audio = document.getElementById('audio');
+    const gif = document.getElementById('gif');
+
+    const songs = ['song1.mp3', 'song2.mp3', /* add more songs here */];
+    const gifs = ['gif1.gif', 'gif2.gif', /* add more gifs here */];
+
+    let currentIndex = 0;
+
+    audio.addEventListener('ended', () => {
+      // Fade out current gif
+      gif.classList.add('fade-out');
+      
+      // Change song and gif
+      currentIndex = (currentIndex + 1) % songs.length;
+      audio.src = songs[currentIndex];
+      gif.src = gifs[currentIndex];
+      
+      // Reset fade-out animation
+      setTimeout(() => {
+        gif.classList.remove('fade-out');
+      }, 1000); // This should match the duration of the fadeOut animation
+    });
+  </script>
+</body>
+</html>
