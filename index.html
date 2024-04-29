@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GIF Player</title>
+  <title>Welcome to MyAlbum</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Load Font Awesome for Minecraft font -->
   <style>
+    /* Your existing styles */
     body {
       margin: 0;
       padding: 0;
@@ -12,50 +14,12 @@
       overflow: hidden; /* Prevent scrolling */
     }
 
-    .container {
+    /* Add styles for the dialogue */
+    .dialogue {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-    }
-
-    .gif-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-    }
-
-    #gif {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .fade-out {
-      animation: fadeOut 1s forwards;
-    }
-
-    @keyframes fadeOut {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0;
-      }
-    }
-
-    /* Set cursor to none */
-    body {
-      cursor: none;
-    }
-
-    /* Modal styles */
-    .modal {
-      display: none;
       position: fixed;
       top: 0;
       left: 0;
@@ -63,73 +27,51 @@
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 9999;
-      cursor: auto; /* Show cursor */
     }
 
-    .modal-content {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+    .dialogue-content {
       background-color: white;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+      text-align: center;
     }
 
-    /* Close button styles */
-    .close {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      cursor: pointer;
+    .dialogue-title {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .dialogue-text {
+      margin-bottom: 20px;
+    }
+
+    .sign {
+      font-family: 'Minecraft', sans-serif; /* Apply Minecraft font */
       font-size: 20px;
-      color: #999;
+      color: #0099ff; /* Minecraft blue color */
     }
 
-    .close:hover {
-      color: #666;
+    @font-face {
+     font-family: 'Minecraft';
+     src: url('minecraft.otf') format('opentype'); /* URL of the .otf font file */
     }
 
-    /* Control buttons */
-    .control-btn {
-      margin: 5px;
-      padding: 10px;
-      cursor: pointer;
-      border: none;
-      background-color: lightgray;
-      border-radius: 5px;
-      font-size: 16px;
-      color: #333;
-    }
-
-    .control-btn:hover {
-      background-color: gray;
-      color: #fff;
-    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Keep audio player with hidden attribute -->
-    <audio id="audio" controls autoplay hidden>
-      <source src="song1.mp3" type="audio/mpeg">
-      Your browser does not support the audio element.
-    </audio>
-  </div>
-  
-  <div class="gif-container">
-    <img id="gif" src="gif1.gif" alt="GIF">
-  </div>
-  
+  <!-- Your existing HTML content -->
   <!-- Modal -->
   <div id="myModal" class="modal">
+    <!-- Modal content -->
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2 style="text-align: center;">Audio Controls</h2>
       <p style="text-align: center;">Current Time: <span id="currentTime">0</span> seconds</p>
       <p style="text-align: center;">Total Duration: <span id="totalDuration">0</span> seconds</p>
       <p style="text-align: center;">Volume: <span id="volume">0</span></p>
+      <input type="range" id="timeInput" min="0" value="0">
+      <input type="range" id="volumeInput" min="0" max="1" step="0.01" value="1">
       <div style="text-align: center;">
         <button class="control-btn" id="shuffleBtn">Shuffle</button>
         <button class="control-btn" id="repeatBtn">Repeat</button>
@@ -139,110 +81,41 @@
       </div>
     </div>
   </div>
-  
+
+  <!-- Dialogue -->
+  <div class="dialogue">
+    <div class="dialogue-content">
+      <div class="dialogue-title">Welcome to MyAlbum</div>
+      <div class="dialogue-text">To open the audio controls, press the "s" key.</div>
+      <div class="sign">- Soham J :)</div>
+    </div>
+  </div>
+
   <script>
-    const audio = document.getElementById('audio');
-    const gif = document.getElementById('gif');
+    // Your existing JavaScript code
+    // Get modal
     const modal = document.getElementById('myModal');
-    const modalContent = document.querySelector('.modal-content');
-    const currentTimeSpan = document.getElementById('currentTime');
-    const totalDurationSpan = document.getElementById('totalDuration');
-    const volumeSpan = document.getElementById('volume');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const repeatBtn = document.getElementById('repeatBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const playPauseBtn = document.getElementById('playPauseBtn');
-    const nextBtn = document.getElementById('nextBtn');
+    // Get dialogue
+    const dialogue = document.querySelector('.dialogue');
+    // Get close button for modal
+    const closeBtn = document.querySelector('.close');
 
-    const songs = ['song1.mp3', 'song2.mp3', /* add more songs here */];
-    const gifs = ['gif1.gif', 'gif2.gif', /* add more gifs here */];
+    // Show dialogue when the page loads
+    window.onload = function() {
+      dialogue.style.display = 'block';
+    };
 
-    let currentIndex = 0;
-    let isShuffle = false;
-    let isRepeat = false;
-
-    audio.addEventListener('ended', () => {
-      // If repeat mode is on, just play the same song again
-      if (isRepeat) {
-        audio.play();
-        return;
+    // Close dialogue when clicking outside of it
+    window.onclick = function(event) {
+      if (event.target == dialogue) {
+        dialogue.style.display = 'none';
       }
-
-      // If shuffle mode is on, select a random song
-      if (isShuffle) {
-        currentIndex = Math.floor(Math.random() * songs.length);
-      } else {
-        // Otherwise, play the next song in the list
-        currentIndex = (currentIndex + 1) % songs.length;
-      }
-
-      audio.src = songs[currentIndex];
-      gif.src = gifs[currentIndex];
-      audio.play();
-    });
-
-    shuffleBtn.addEventListener('click', () => {
-      isShuffle = !isShuffle;
-      shuffleBtn.style.backgroundColor = isShuffle ? 'gray' : 'lightgray';
-    });
-
-    repeatBtn.addEventListener('click', () => {
-      isRepeat = !isRepeat;
-      repeatBtn.style.backgroundColor = isRepeat ? 'gray' : 'lightgray';
-    });
-
-    prevBtn.addEventListener('click', () => {
-      // Play the previous song
-      currentIndex = (currentIndex - 1 + songs.length) % songs.length;
-      audio.src = songs[currentIndex];
-      gif.src = gifs[currentIndex];
-      audio.play();
-    });
-
-    playPauseBtn.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play();
-        playPauseBtn.textContent = 'Pause';
-      } else {
-        audio.pause();
-        playPauseBtn.textContent = 'Play';
-      }
-    });
-
-    nextBtn.addEventListener('click', () => {
-      // Play the next song
-      currentIndex = (currentIndex + 1) % songs.length;
-      audio.src = songs[currentIndex];
-      gif.src = gifs[currentIndex];
-      audio.play();
-    });
-
-    audio.addEventListener('timeupdate', () => {
-      currentTimeSpan.textContent = Math.floor(audio.currentTime);
-      totalDurationSpan.textContent = Math.floor(audio.duration);
-      volumeSpan.textContent = Math.floor(audio.volume * 100) + '%';
-    });
-
-    // Show modal when "s" key is pressed
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 's') {
-        modal.style.display = 'block';
-        updateStats();
-      }
-    });
+    };
 
     // Close modal when close button is clicked
-    const closeBtn = document.querySelector('.close');
     closeBtn.addEventListener('click', () => {
       modal.style.display = 'none';
     });
-
-    // Update audio stats
-    function updateStats() {
-      currentTimeSpan.textContent = Math.floor(audio.currentTime);
-      totalDurationSpan.textContent = Math.floor(audio.duration);
-      volumeSpan.textContent = Math.floor(audio.volume * 100) + '%';
-    }
   </script>
 </body>
 </html>
